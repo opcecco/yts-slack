@@ -29,7 +29,7 @@ class YTSBot:
 	"""
 	def respond(self, userid, message):
 		if self.user in message:
-			message = message.lower()
+			message = message.lower().split(self.user, 1)[1]
 
 			# Check if someone wants the bot to find a movie
 			if 'find ' in message:
