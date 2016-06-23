@@ -28,9 +28,9 @@ class YTSBot:
 				match = re.findall('\d+', message)[-1]
 				if match is not None:
 					if 'about' in message:
-						return 'Note: This is a debug feature...\n' + str(self.awaiting_choice[userid][int(match.group()) -1])
+						return 'Note: This is a debug feature...\n' + str(self.awaiting_choice[userid][int(match) -1])
 					else:
-						return self.select_movie(userid, int(match.group()) - 1)
+						return self.select_movie(userid, int(match) - 1)
 		return None
 
 
@@ -55,11 +55,12 @@ class YTSBot:
 		self.awaiting_choice[userid] = data['movies']
 		outstring = 'Which movie did you mean, <@' + userid + '>?\n'
 
-		outstring += '\n'.join(['[' + str(data['movies'].index(movie) + 1) + '] ' + movie['title'] + ' (' + str(movie['year']) + ') ' + movie['medium_cover_image'] for movie in data['movies']])
+		outstring += '\n'.join(['[' + str(data['movies'].index(movie) + 1) + '] ' + movie['title'] + ' (' + str(movie['year']) + ')\n' + movie['medium_cover_image'] for movie in data['movies']])
 		return outstring
 
 
 	def download(self, url):
+		print 'Downloading ' + url
 		filename = url.split('/')[-1]
 		request = Request(url, headers = {'User-Agent': config.browser_spoof})
 		infile = urlopen(request)
@@ -75,6 +76,7 @@ class YTSBot:
 
 		data = urlencode(search_values)
 		url = 'https://yts.ag/api/v2/list_movies.json?' + data
+		print 'Querying ' + url
 
 		request = Request(url, headers = {'User-Agent': config.browser_spoof})
 		result = urlopen(request)

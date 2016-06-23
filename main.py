@@ -40,20 +40,16 @@ while True:
 		stream = client.rtm_read()
 
 		for event in stream:
-			print event
-
 			if 'type' in event and 'channel' in event and 'text' in event and 'user' in event and event['type'] == 'message':
-
 				uchannel = event['channel']
 				text = event['text'].encode('utf8', 'ignore')
 				userid = event['user'].encode('utf8', 'ignore')
 
 				response = bot.respond(userid, text)
-
 				if response is not None:
 					client.rtm_send_message(uchannel, response)
 
-	except:
-		pass
+	except Exception as e:
+		print 'Exception: ' + e
 
 	sleep(config.listen_delay)
