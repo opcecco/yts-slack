@@ -39,7 +39,7 @@ while True:
 				userid = event['user'].encode('utf8', 'ignore')
 
 				print userid
-				print message
+				print text
 				#response = bot.respond(userid, text)
 
 				#if response is not None:
