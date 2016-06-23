@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 
-import json, re, os
-from urllib import urlencode
-from urllib2 import Request, urlopen
-from random import choice
-
+import json, re, os, urllib, urllib2, random
 import config
 
 
@@ -24,7 +20,7 @@ class YTSBot:
 			if userid in self.awaiting_choice.keys():
 				if 'no' in message:
 					del(self.awaiting_choice[userid])
-					return choice(config.friendly_responses) + '<@' + userid + '>. I won\'t download any of them.'
+					return random.choice(config.friendly_responses) + '<@' + userid + '>. I won\'t download any of them.'
 				match = re.findall('\d+', message)[-1]
 				if match is not None:
 					if 'about' in message:
@@ -43,7 +39,7 @@ class YTSBot:
 
 		url = [torrent['url'] for torrent in movie['torrents'] if torrent['quality'] == config.search_values['quality']][0]
 		self.download(url)
-		return choice(config.friendly_responses) + '<@' + userid + '>. I\'ll download ' + movie['title'] + ' (' + str(movie['year']) + ')!'
+		return random.choice(config.friendly_responses) + '<@' + userid + '>. I\'ll download ' + movie['title'] + ' (' + str(movie['year']) + ')!'
 
 
 	def find_movie(self, userid, movie_title):
@@ -62,8 +58,8 @@ class YTSBot:
 	def download(self, url):
 		print 'Downloading ' + url
 		filename = url.split('/')[-1]
-		request = Request(url, headers = {'User-Agent': config.browser_spoof})
-		infile = urlopen(request)
+		request = urllib2.Request(url, headers = {'User-Agent': config.browser_spoof})
+		infile = urllib2.urlopen(request)
 		
 		with open(os.path.expanduser(config.download_folder + '/' + filename), 'wb') as outfile:
 			outfile.write(infile.read())
@@ -74,10 +70,10 @@ class YTSBot:
 		search_values = config.search_values
 		search_values['query_term'] = search_term
 
-		data = urlencode(search_values)
+		data = urllib.urlencode(search_values)
 		url = 'https://yts.ag/api/v2/list_movies.json?' + data
 		print 'Querying ' + url
 
-		request = Request(url, headers = {'User-Agent': config.browser_spoof})
-		result = urlopen(request)
+		request = urllib2.Request(url, headers = {'User-Agent': config.browser_spoof})
+		result = urllib2.urlopen(request)
 		return json.loads(result.read())

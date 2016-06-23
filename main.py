@@ -1,30 +1,16 @@
 #!/usr/bin/env python
 
-from time import sleep
-from slackclient import SlackClient
-
-from ytsbot import YTSBot
-import config
+import slackclient, time
+import ytsbot, config
 
 
-# Hijack it here for testing
-
-#bot = YTSBot()
-#while True:
-#	message = raw_input().lower()
-#	userid = message[0]
-#	response = bot.respond(userid, message)
-#	if response is not None:
-#		print response
-
-
-client = SlackClient(config.slack_token)
+client = slackclient.SlackClient(config.slack_token)
 
 if not client.rtm_connect():
 	print 'Connection Failed'
 	exit()
 
-bot = YTSBot()
+bot = ytsbot.YTSBot()
 
 while bot.user == None:
 	stream = client.rtm_read()
@@ -50,6 +36,6 @@ while True:
 					client.rtm_send_message(uchannel, response)
 
 	except Exception as e:
-		print 'Exception: ' + e
+		print '!!! Exception: ' + e
 
-	sleep(config.listen_delay)
+	time.sleep(config.listen_delay)
