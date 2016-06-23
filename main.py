@@ -33,7 +33,7 @@ while bot.user == None:
 			bot.user = event['user']
 			break
 
-print 'Bot ID is: ' + bot.id
+print 'Bot ID is: ' + bot.user
 
 while True:
 	try:
