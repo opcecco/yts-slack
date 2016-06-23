@@ -17,14 +17,18 @@ class YTSBot:
 
 	def respond(self, userid, message):
 		if self.user in message:
+			message = message.lower()
 			if 'find ' in message:
 				title = message.split('find ', 1)[1]
 				return self.find_movie(userid, title)
 			if userid in self.awaiting_choice.keys():
-				match = re.search('\d+', message)
+				if 'no' in message:
+					del(self.awaiting_choice[userid])
+					return choice(config.friendly_responses) + '<@' + userid + '>. I won\'t download any of them.'
+				match = re.findall('\d+', message)[-1]
 				if match is not None:
 					if 'about' in message:
-						return str(self.awaiting_choice[userid][int(match.group()) -1])
+						return 'Note: This is a debug feature...\n' + str(self.awaiting_choice[userid][int(match.group()) -1])
 					else:
 						return self.select_movie(userid, int(match.group()) - 1)
 		return None
