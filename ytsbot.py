@@ -11,21 +11,22 @@ import config
 class YTSBot:
 
 	def __init__(self):
-		self.id = None
+		self.user = None
 		self.awaiting_choice = {}
 
 
 	def respond(self, userid, message):
-		if 'find ' in message:
-			title = message.split('find ', 1)[1]
-			return self.find_movie(userid, title)
-		if userid in self.awaiting_choice.keys():
-			match = re.search('\d+', message)
-			if match is not None:
-				if 'about' in message:
-					return str(self.awaiting_choice[userid])
-				else:
-					return self.select_movie(userid, int(match.group()) - 1)
+		if self.user in message:
+			if 'find ' in message:
+				title = message.split('find ', 1)[1]
+				return self.find_movie(userid, title)
+			if userid in self.awaiting_choice.keys():
+				match = re.search('\d+', message)
+				if match is not None:
+					if 'about' in message:
+						return str(self.awaiting_choice[userid][int(match.group()) -1])
+					else:
+						return self.select_movie(userid, int(match.group()) - 1)
 		return None
 
 
