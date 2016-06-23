@@ -29,7 +29,7 @@ class YTSBot:
 	"""
 	def respond(self, userid, message):
 		if self.user in message:
-			message = message.lower().split(self.user, 1)[1]
+			message = message.split(self.user, 1)[1].lower()
 
 			# Check if someone wants the bot to find a movie
 			if 'find ' in message:
@@ -42,12 +42,12 @@ class YTSBot:
 					del(self.awaiting_choice[userid])
 					return random.choice(config.friendly_responses) + '<@' + userid + '>. I won\'t download any of them.'
 
-				match = re.findall('\d+', message)[-1]
-				if match is not None:
+				matches = re.findall('\d+', message)
+				if len(matches) > 0:
 					if 'about' in message:
-						return 'Note: This is a debug feature...\n' + str(self.awaiting_choice[userid][int(match) -1])
+						return 'Note: This is a debug feature...\n' + str(self.awaiting_choice[userid][int(matches[-1]) -1])
 					else:
-						return self.select_movie(userid, int(match) - 1)
+						return self.select_movie(userid, int(matches[-1]) - 1)
 
 		# If the message is nothing of interest, just ignore it
 		return None
