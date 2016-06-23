@@ -37,7 +37,7 @@ class YTSBot:
 
 		url = [torrent['url'] for torrent in movie['torrents'] if torrent['quality'] == config.search_values['quality']][0]
 		self.download(url)
-		return choice(config.friendly_responses) + userid + '. I\'ll download ' + movie['title'] + ' (' + str(movie['year']) + ')!'
+		return choice(config.friendly_responses) + '<@' + userid + '>. I\'ll download ' + movie['title'] + ' (' + str(movie['year']) + ')!'
 
 
 	def find_movie(self, userid, movie_title):
@@ -49,7 +49,7 @@ class YTSBot:
 		self.awaiting_choice[userid] = data['movies']
 		outstring = 'Which movie did you mean, <@' + userid + '>?\n'
 
-		outstring += '\n'.join(['[' + str(data['movies'].index(movie) + 1) + '] ' + movie['title'] + ' (' + str(movie['year']) + ')' for movie in data['movies']])
+		outstring += '\n'.join(['[' + str(data['movies'].index(movie) + 1) + '] ' + movie['title'] + ' (' + str(movie['year']) + ') ' + movie['medium_cover_image'] for movie in data['movies']])
 		return outstring
 
 
