@@ -26,11 +26,21 @@ if not client.rtm_connect():
 
 bot = YTSBot()
 
+while bot.id == None:
+	stream = client.rtm_read()
+	for event in stream:
+		if 'type' in event and event['type'] == 'presence_change':
+			bot.id = event['user'
+			break
+
+print 'Bot ID is: ' + bot.id
+
 while True:
 	try:
 		stream = client.rtm_read()
 
 		for event in stream:
+			print event
 
 			if 'type' in event and 'channel' in event and 'text' in event and 'user' in event and event['type'] == 'message':
 
@@ -38,8 +48,6 @@ while True:
 				text = event['text'].encode('utf8', 'ignore')
 				userid = event['user'].encode('utf8', 'ignore')
 
-				print userid
-				print text
 				#response = bot.respond(userid, text)
 
 				#if response is not None:

@@ -11,6 +11,7 @@ import config
 class YTSBot:
 
 	def __init__(self):
+		self.id = None
 		self.awaiting_choice = {}
 
 
