@@ -30,7 +30,7 @@ while bot.id == None:
 	stream = client.rtm_read()
 	for event in stream:
 		if 'type' in event and event['type'] == 'presence_change':
-			bot.id = event['user'
+			bot.id = event['user']
 			break
 
 print 'Bot ID is: ' + bot.id
