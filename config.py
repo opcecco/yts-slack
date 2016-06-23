@@ -1,3 +1,5 @@
+## Config file for YTS Movie Slack Bot
+
 # Token so your bot can connect to your slack channel
 slack_token = 'INSERT YOU SLACK BOT TOKEN HERE'
 
