@@ -46,6 +46,7 @@ while True:
 	# Catch any and all exceptions and print them for debug
 	except Exception as e:
 		print '!!! Exception: ' + str(e)
+		print e.__class__.__name__
 
 	# Wait so we don't eat CPU time
 	time.sleep(config.listen_delay)
