@@ -8,7 +8,7 @@
 ###############################
 
 
-import slackclient, time
+import slackclient, time, socket
 import ytsbot, config
 
 
@@ -44,9 +44,17 @@ while True:
 					client.rtm_send_message(uchannel, response)
 
 	# Catch any and all exceptions and print them for debug
+	except UnicodeDecodeError:
+		print '! --> Unicode Decode Error'
+
+	except socket.error:
+		print '! --> Socket closed'
+		exit()
+
 	except Exception as e:
-		print '!!! Exception: ' + str(e)
-		print e.__class__.__name__
+		print '!!! --> Uncaught exception: ' + e.__class__.__name__
+		print str(type(e))
+		print str(e)
 
 	# Wait so we don't eat CPU time
 	time.sleep(config.listen_delay)
