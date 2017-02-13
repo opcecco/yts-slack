@@ -1,9 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 
 # Local test script for YTS Movie Slack Bot
 # Author: Oliver Ceccopieri
-# Designed for Python 2
+# Designed for Python 3
 
 
 import ytsbot
@@ -11,12 +11,12 @@ import ytsbot
 
 bot = ytsbot.YTSBot()
 bot.user = 'bot'
-userid = 'tester'
+userid = 'localtest'
 
-print 'Local bot tester. He will respond to "@bot"'
+print('Local bot tester. He will respond to "@bot"')
 
 while True:
-	message = raw_input('>')
+	message = input('>')
 	response = bot.respond(userid, message)
 	if response is not None:
-		print response
+		print(response)

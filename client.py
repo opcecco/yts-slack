@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 
 ###############################
 ##    YTS Movie Slack Bot    ##
 ## Author: Oliver Ceccopieri ##
-##   Designed for Python 2   ##
+##   Designed for Python 3   ##
 ###############################
 
 
@@ -12,10 +12,17 @@ import slackclient, time, socket
 import ytsbot, config
 
 
+'''
+Return only ASCII text of a string
+'''
+def ascii_only(string):
+	return ''.join([c for c in string if 32 <= ord(c) <= 126])
+
+
 # Connect to Slack
 client = slackclient.SlackClient(config.slack_token)
 if not client.rtm_connect():
-	print 'Connection Failed'
+	print('Connection Failed')
 	exit()
 
 # Create the bot and find it's user ID (the first user it sees in the channel)
@@ -26,7 +33,7 @@ while bot.user == None:
 		if 'type' in event and event['type'] == 'presence_change':
 			bot.user = event['user']
 			break
-print 'Bot ID is: ' + bot.user
+print('Bot ID is: ' + bot.user)
 
 # Main listen loop
 while True:
@@ -35,8 +42,8 @@ while True:
 		for event in stream:
 			if 'type' in event and 'channel' in event and 'text' in event and 'user' in event and event['type'] == 'message':
 				uchannel = event['channel']
-				text = event['text'].encode('utf8', 'ignore')
-				userid = event['user'].encode('utf8', 'ignore')
+				text = ascii_only(event['text'])
+				userid = ascii_only(event['user'])
 
 				# Get a response from the bot
 				response = bot.respond(userid, text)
@@ -45,16 +52,16 @@ while True:
 
 	# Catch any and all exceptions and print them for debug
 	except UnicodeDecodeError:
-		print '! --> Unicode Decode Error'
+		print('! --> Unicode Decode Error')
 
 	except socket.error:
-		print '! --> Socket closed'
+		print('! --> Socket closed')
 		exit()
 
 	except Exception as e:
-		print '!!! --> Uncaught exception: ' + e.__class__.__name__
-		print str(type(e))
-		print str(e)
+		print('!!! --> Uncaught exception: ' + e.__class__.__name__)
+		print(str(type(e)))
+		print(str(e))
 
 	# Wait so we don't eat CPU time
 	time.sleep(config.listen_delay)

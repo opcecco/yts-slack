@@ -1,12 +1,12 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 
 # YTS bot class for the YTS Movie Slack Bot
 # Author: Oliver Ceccopieri
-# Designed to be run in Python 2
+# Designed to be run in Python 3
 
 
-import json, re, os, urllib, urllib2, random
+import os, re, requests, random
 import config
 
 
@@ -94,13 +94,12 @@ class YTSBot:
 	return: None
 	"""
 	def __download(self, url):
-		print 'Downloading ' + url
+		print('Downloading ' + url)
 		filename = url.split('/')[-1]
-		request = urllib2.Request(url, headers = {'User-Agent': config.browser_spoof})
-		infile = urllib2.urlopen(request)
+		result = requests.get(url)
 		
-		with open(os.path.expanduser(config.download_folder + '/' + filename), 'wb') as outfile:
-			outfile.write(infile.read())
+		with open(os.path.expanduser(config.download_folder + '/' + filename + '.torrent'), 'wb') as outfile:
+			outfile.write(result.content)
 		return
 
 	"""
@@ -111,11 +110,6 @@ class YTSBot:
 	def __query(self, search_term):
 		search_values = config.search_values
 		search_values['query_term'] = search_term
-
-		data = urllib.urlencode(search_values)
-		url = 'https://yts.ag/api/v2/list_movies.json?' + data
-		print 'Querying ' + url
-
-		request = urllib2.Request(url, headers = {'User-Agent': config.browser_spoof})
-		result = urllib2.urlopen(request)
-		return json.loads(result.read())
+		result = requests.get(config.yts_url, params = search_values)
+		print('Querying ' + result.url)
+		return result.json()
