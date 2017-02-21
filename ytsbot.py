@@ -40,7 +40,7 @@ class YTSBot:
 			if userid in self.awaiting_choice.keys():
 				if 'no' in message:
 					del(self.awaiting_choice[userid])
-					return random.choice(config.friendly_responses) + '<@' + userid + '>. I won\'t download any of them.'
+					return random.choice(config.negative_responses) + '<@' + userid + '>. I won\'t download any of them.'
 
 				matches = re.findall('\d+', message)
 				if len(matches) > 0:
@@ -68,7 +68,7 @@ class YTSBot:
 		# Go download the file
 		url = [torrent['url'] for torrent in movie['torrents'] if torrent['quality'] == config.search_values['quality']][0]
 		self.__download(url)
-		return random.choice(config.friendly_responses) + '<@' + userid + '>. I\'ll download ' + movie['title'] + ' (' + str(movie['year']) + ')!'
+		return random.choice(config.positive_responses) + '<@' + userid + '>. I\'ll download ' + movie['title'] + ' (' + str(movie['year']) + ')!'
 
 	"""
 	Find a movie for a user

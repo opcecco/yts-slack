@@ -7,20 +7,20 @@ slack_token = 'xoxb-00000000000-XXXXXXXXXXXXXXXXXXXXXXXX' ### INSERT YOUR OWN SL
 listen_delay = 1.0
 
 # Folder to download torrent files to
-download_folder = '~/watch'
+download_folder = '~'
 
 # URL for the YTS movie restful API
 yts_url = 'https://yts.ag/api/v2/list_movies.json'
 
-# Parameters for the YTS.ag search, please refer to their API
+# Parameters for the search, please refer to their API
 search_values = {
 	'quality': '720p',
 	'limit': '3',
 	'sort_by': 'date_added',
 }
 
-# Make him a little more personable
-friendly_responses = (
+# Responses when downloading
+positive_responses = (
 	'Alright, ',
 	'OK, ',
 	'Sounds good, ',
@@ -36,4 +36,15 @@ friendly_responses = (
 	'That\'s a good one, ',
 	':wink: Let\'s watch it together, ',
 	'Huh really? Whatever you say, ',
+)
+
+# Responses when cancelling a download
+negative_responses = (
+	'Alright, ',
+	'OK, ',
+	'Fine, ',
+	'Nevermind then, ',
+	'If you say so, ',
+	'Less work for me, ',
+	'Cool beans, ',
 )
