@@ -23,7 +23,7 @@ def ascii_only(string):
 Connect to the slack channel
 '''
 def slack_connect():
-	client = slackclient.SlackClient(config.slack_token)
+	global client = slackclient.SlackClient(config.slack_token)
 	if not client.rtm_connect():
 		print('Connection Failed')
 		exit()
