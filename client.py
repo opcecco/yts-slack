@@ -19,23 +19,28 @@ def ascii_only(string):
 	return ''.join([c for c in string if 32 <= ord(c) <= 126])
 
 
-# Connect to Slack
-client = slackclient.SlackClient(config.slack_token)
-if not client.rtm_connect():
-	print('Connection Failed')
-	exit()
+'''
+Connect to the slack channel
+'''
+def slack_connect():
+	client = slackclient.SlackClient(config.slack_token)
+	if not client.rtm_connect():
+		print('Connection Failed')
+		exit()
 
-# Create the bot and find it's user ID (the first user it sees in the channel)
-bot = ytsbot.YTSBot()
-while bot.user == None:
-	stream = client.rtm_read()
-	for event in stream:
-		if 'type' in event and event['type'] == 'presence_change':
-			bot.user = event['user']
-			break
-print('Bot ID is: ' + bot.user)
+	# Create the bot and find it's user ID (the first user it sees in the channel)
+	bot = ytsbot.YTSBot()
+	while bot.user == None:
+		stream = client.rtm_read()
+		for event in stream:
+			if 'type' in event and event['type'] == 'presence_change':
+				bot.user = event['user']
+				break
+	print('Bot ID is: ' + bot.user)
 
-# Main listen loop
+
+# Main script
+slack_connect()
 while True:
 	try:
 		stream = client.rtm_read()
@@ -54,9 +59,10 @@ while True:
 	except UnicodeDecodeError:
 		print('! --> Unicode Decode Error')
 
-	except socket.error:
-		print('! --> Socket closed')
-		exit()
+	except websocket._exceptions.WebSocketConnectionClosedException:
+		print('! --> Connection closed')
+		print('Attempting reconnect...')
+		slack_connect()
 
 	except Exception as e:
 		print('!!! --> Uncaught exception: ' + e.__class__.__name__)
