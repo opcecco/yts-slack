@@ -49,7 +49,7 @@ def start_bot(token):
 				if 'type' in event and 'channel' in event and 'text' in event and 'user' in event and event['type'] == 'message':
 
 					channel = event['channel']
-					userid = ascii_only(event['user'])
+					user_id = ascii_only(event['user'])
 					text = ascii_only(event['text'])
 
 					# Respond only if a user mentions the bot
