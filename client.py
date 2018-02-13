@@ -80,4 +80,4 @@ def start_bot(token):
 Start a bot
 '''
 if __name__ == '__main__':
-	startbot(sys.argv[1])
+	start_bot(sys.argv[1])
