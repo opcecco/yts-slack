@@ -6,7 +6,7 @@
 # Designed to be run in Python 3
 
 
-import os, re, requests, random
+import os, re, requests, random, json
 import config
 
 
@@ -112,4 +112,5 @@ class YTSBot:
 		search_values['query_term'] = search_term
 		result = requests.get(config.yts_url, params = search_values)
 		print('Querying ' + result.url)
-		return result.json()
+		text = result.text
+		return json.loads(text[text.find('{'):])
