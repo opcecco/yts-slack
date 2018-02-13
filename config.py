@@ -1,8 +1,5 @@
 ## Config file for YTS Movie Slack Bot
 
-# Token so your bot can connect to your slack channel
-slack_token = 'xoxb-00000000000-XXXXXXXXXXXXXXXXXXXXXXXX' ### INSERT YOUR OWN SLACK TOKEN HERE
-
 # Delay for main listen loop
 listen_delay = 1.0
 
@@ -10,7 +7,7 @@ listen_delay = 1.0
 download_folder = '~'
 
 # URL for the YTS movie restful API
-yts_url = 'https://yts.ag/api/v2/list_movies.json'
+yts_url = 'https://yts.am/api/v2/list_movies.json'
 
 # Parameters for the search, please refer to their API
 search_values = {

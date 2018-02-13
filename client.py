@@ -8,7 +8,7 @@
 ###############################
 
 
-import slackclient, time, socket
+import sys, slackclient, time, websocket
 import ytsbot, config
 
 
@@ -20,55 +20,64 @@ def ascii_only(string):
 
 
 '''
-Connect to the slack channel
+Connect to a Slack team and start the bot
 '''
-def slack_connect():
-	global client
-	client = slackclient.SlackClient(config.slack_token)
+def start_bot(token):
+
+	client = slackclient.SlackClient(token)
+	timeout = config.listen_delay
+
 	if not client.rtm_connect():
 		print('Connection Failed')
-		exit()
+		return
 
-	# Create the bot and find it's user ID (the first user it sees in the channel)
+	# Get the bot's user ID to handle mentions
+	bot_id = client.api_call('auth.test')['user_id']
+	print('Bot ID is: ' + bot_id)
+
 	bot = ytsbot.YTSBot()
-	while bot.user == None:
-		stream = client.rtm_read()
-		for event in stream:
-			if 'type' in event and event['type'] == 'presence_change':
-				bot.user = event['user']
-				break
-	print('Bot ID is: ' + bot.user)
+	bot.user = bot_id
+
+	# Message listener loop
+	while True:
+
+		try:
+			stream = client.rtm_read()
+
+			# Read all events in stream, react to user-entered messages only
+			for event in stream:
+				if 'type' in event and 'channel' in event and 'text' in event and 'user' in event and event['type'] == 'message':
+
+					channel = event['channel']
+					userid = ascii_only(event['user'])
+					text = ascii_only(event['text'])
+
+					# Respond only if a user mentions the bot
+					if bot_id in text:
+						response = bot.respond(user_id, text)
+
+						if response is not None:
+							client.rtm_send_message(channel, response)
+
+		# Sometimes we get text decode errors
+		except UnicodeDecodeError:
+			print('! Unicode Decode Error')
+
+		# Attempt to reconnect if our bot loses connection
+		except websocket.WebSocketConnectionClosedException:
+			print('Attempting reconnect...')
+
+			if not client.rtm_connect():
+				print('! Failed')
+			else:
+				print('Success')
+
+		# Delay the next listen loop
+		time.sleep(timeout)
 
 
-# Main script
-slack_connect()
-while True:
-	try:
-		stream = client.rtm_read()
-		for event in stream:
-			if 'type' in event and 'channel' in event and 'text' in event and 'user' in event and event['type'] == 'message':
-				uchannel = event['channel']
-				text = ascii_only(event['text'])
-				userid = ascii_only(event['user'])
-
-				# Get a response from the bot
-				response = bot.respond(userid, text)
-				if response is not None:
-					client.rtm_send_message(uchannel, response)
-
-	# Catch any and all exceptions and print them for debug
-	except UnicodeDecodeError:
-		print('! --> Unicode Decode Error')
-
-	except websocket._exceptions.WebSocketConnectionClosedException:
-		print('! --> Connection closed')
-		print('Attempting reconnect...')
-		slack_connect()
-
-	except Exception as e:
-		print('!!! --> Uncaught exception: ' + e.__class__.__name__)
-		print(str(type(e)))
-		print(str(e))
-
-	# Wait so we don't eat CPU time
-	time.sleep(config.listen_delay)
+'''
+Start a bot
+'''
+if __name__ == '__main__':
+	startbot(sys.argv[1])
